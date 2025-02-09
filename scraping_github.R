@@ -81,7 +81,7 @@ tabla_2 <- tabla_1 |>
 # calcular
 tabla_3 <- tabla_2 |> 
   rowwise() |> 
-  mutate(aplicación = "app" %in% etiquetas,
+  mutate(app = "app" %in% etiquetas,
          genero = "genero" %in% etiquetas,
          comunas = "comunas" %in% etiquetas,
          tiempo = case_when("meses" %in% etiquetas ~ "mensual",
@@ -140,7 +140,8 @@ datos_repos_2 <- datos_repos |>
 
 tabla_4 <- tabla_3 |> 
   left_join(datos_repos_2,
-            by = "enlace")
+            by = "enlace") |> 
+  mutate(enlace = paste("https://github.com", enlace, sep = ""))
 
 
 # guardar ----

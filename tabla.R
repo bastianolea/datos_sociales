@@ -33,54 +33,12 @@ library(gt)
 #     gt::html()
 # }
 
-col_tag <- function(elementos) {
-  
-  # browser()
-  div_out <- map(elementos, \(tag) {
-    
-    div_out <- htmltools::div(
-      style = paste(
-        "display: inline-block; padding: 3px 8px; border-radius: 15px; font-weight: 600; 
-        font-size: 10px; border: 1px solid black; margin: 2px 0px 2px 0px"
-      ),
-      tag
-    )
-  })
-  # browser()
-  div_out |> 
-    # shiny::tagList() |> 
-    htmltools::div() |>
-    as.character() |> 
-    gt::html()
-}
-
-
-col_link <- function(texto, enlace) {
- paste0("[", texto, "]",
-       "(", enlace, ")")
-}
-
-col_icon <- function(value, icon = "arrow-up", color = "black") {
-  if (value) {
-    logo <- fontawesome::fa(icon, fill = color)
-  } else {
-    logo <- ""
-  }
-  
-  logo |> as.character() |> gt::html()
-}
-
-col_icon_multi <- function(value, icon = "arrow-up", color = "black") {
-  if (value) {
-    logo <- fontawesome::fa(icon, fill = color)
-  } else {
-    logo <- ""
-  }
-  
-  logo |> as.character() |> gt::html()
-}
+source("funciones.R")
 
 datos |> 
+  arrange(desc(fecha)) |> 
+  relocate(reciente, popular, .after = etiquetas) |> 
+  mutate(titulo = ifelse(!is.na(titulo_repo), titulo_repo, titulo)) |> 
   print(n=Inf) |>
   # formato columnas gt
   rowwise() |>
@@ -92,9 +50,10 @@ datos |>
   rowwise() |>
   mutate(etiquetas = col_tag(etiquetas),
          titulo = col_link(titulo, enlace),
-         aplicación = col_icon(aplicación, "window-restore"),
+         # aplicación = col_icon(aplicación, "window-restore"),
+         aplicación = col_icon_link(aplicación, "window-restore", enlace_app),
          popular = col_icon(popular, "arrow-up"),
-         genero = col_icon(genero, "venus"),
+         genero = col_icon(genero, "venus", tooltip = "hola"),
          comunas = col_icon(comunas, "map"),
          reciente = col_icon(reciente, "star")) |> 
   gt() |> 
@@ -106,14 +65,42 @@ datos |>
              "center") |> 
   fmt_markdown(columns = c(titulo, etiquetas,
                            genero, comunas, aplicación, reciente, popular)) |> 
-  cols_hide(c(enlace, estrellas, fecha)) |> 
+  cols_hide(c(enlace, estrellas, fecha, enlace_app, titulo_repo)) |> 
   cols_width(descripcion ~ "40%",
              etiquetas ~ "20%") |> 
+  # centrar verticalmente texto de celdas
   tab_style(style = "vertical-align:middle", 
-            locations = cells_body( columns = everything())
-            ) 
-  # opt_interactive(active = TRUE, 
-  #                 use_highlight = TRUE,
-  #                 use_sorting = TRUE,
-  #                 selection_mode = "single", use_pagination = F,
-  #                 use_resizers = TRUE)
+            locations = cells_body(columns = everything())
+            ) |> 
+  tab_style(style = cell_text(color = "black", weight = "bold"),
+            locations = cells_body(columns = titulo)) |> 
+  cols_label(titulo = "",
+             descripcion = "",
+             etiquetas = "",
+             reciente = "Reciente",
+             popular = "Popular",
+             genero = "Género",
+             aplicación = "App",
+             comunas = "Comunas",
+             tiempo = "Tiempo") |> 
+  # eliminar bordes de arriba y abajo de la tabla
+  tab_options(column_labels.border.top.color = "white", 
+              column_labels.border.bottom.color = "white",
+              table_body.border.bottom.color = "white",
+              table.additional_css = "a {color: black !important;}")
+
+tibble("icono" = c("star"), 
+       "texto" = c("Recientes")) |> 
+  gt()
+
+tribble(~icono, ~titulo, ~explicacion,
+        "star", "Recientes", "Código o datos recientemente actualizados",
+        "arrow-up", "Popular", "Conjunto de datos popular en GitHub",
+        "window-restore", "App", "Aplicación interactiva disponible",
+        "venus", "Género", "Datos desagregados por género",
+        "map", "Comunas", "Datos desagregados por comunas",
+        "calendar-days", "Años", "Temporalidad anual de las observaciones",
+        "calendar-days", "Meses", "Temporalidad mensual de las observaciones") |> 
+  gt() |> 
+  fmt_icon(columns = icono) |> 
+  cols_align(columns = icono, "center")
