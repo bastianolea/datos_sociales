@@ -61,6 +61,10 @@ tabla_0 <- map(repositorios, \(repositorio) {
          fecha)
 })
 
+
+
+
+
 # filtrar ----
 # dejar solo los que contengan datos
 tabla_1 <- tabla_0 |> 
@@ -76,21 +80,68 @@ tabla_2 <- tabla_1 |>
 
 # calcular
 tabla_3 <- tabla_2 |> 
-rowwise() |> 
+  rowwise() |> 
   mutate(aplicación = "app" %in% etiquetas,
          genero = "genero" %in% etiquetas,
          comunas = "comunas" %in% etiquetas,
          tiempo = case_when("meses" %in% etiquetas ~ "mensual",
-                                  "tiempo" %in% etiquetas ~ "anual",
-                                  .default = "no")) |> 
+                            "tiempo" %in% etiquetas ~ "anual",
+                            .default = "no")) |> 
   ungroup() |> 
   mutate(popular = estrellas > quantile(estrellas, .35, na.rm = TRUE),
          popular = ifelse(is.na(popular), FALSE, popular),
          reciente = fecha >= today() - months(2))
 
 
+# scraping repos ----
 
+# scraping de cada repositorio para obtener enlaces y títulos
+datos_repos <- map(tabla_1$enlace, \(enlace) {
+  # enlace <- tabla_1$enlace[12]
+  url_repo <- paste0("https://github.com", enlace)
+  
+  sitio_repo <- url_repo |> 
+    read_html()
+  
+  enlace_app <- sitio_repo |> 
+    html_elements(".Layout-sidebar") |> 
+    html_elements(".my-3") |> 
+    html_elements(".flex-auto") |> 
+    html_elements("a") |> 
+    html_attr("href")
+  
+  if (length(enlace_app) == 0) enlace_app <- NA_character_
+  
+  titulo_repo <- sitio_repo |> 
+    html_elements(".markdown-body") |> 
+    html_elements("h1") |> 
+    html_text() |> 
+    pluck(1)
+  
+  if (length(titulo_repo) == 0) {
+    titulo_repo <- sitio_repo |> 
+      html_elements(".markdown-body") |> 
+      html_elements("h2") |> 
+      html_text() |> 
+      pluck(1)
+  }
+  
+  if (length(titulo_repo) == 0) titulo_repo <- NA_character_
+  
+  tibble(enlace_app,
+         titulo_repo,
+         enlace)
+})
+
+# limpieza
+datos_repos_2 <- datos_repos |> 
+  list_rbind() |> 
+  filter(!is.na(enlace_app) | !is.na(titulo_repo))
+
+tabla_4 <- tabla_3 |> 
+  left_join(datos_repos_2,
+            by = "enlace")
 
 
 # guardar ----
-readr::write_rds(tabla_3, "repositorios.rds")
+readr::write_rds(tabla_4, "repositorios.rds")
