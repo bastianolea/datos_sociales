@@ -1,0 +1,242 @@
+---
+title: "Repositorio de datos sociales"
+author: "Bastián Olea Herrera"
+format:
+  html:
+    html-table-processing: none
+    link-external-icon: false
+execute: 
+  warning: false
+  message: false
+  echo: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup}
+library(shiny)
+library(glue)
+library(colorspace)
+library(htmltools)
+library(dplyr)
+library(purrr)
+library(lubridate)
+library(gt)
+
+source("funciones.R")
+source("colores.R")
+
+datos <- readr::read_rds("repositorios.rds")
+```
+
+
+```{r css}
+#| echo: false
+#| warning: false
+#| output: asis
+
+fluidPage(lang = "es",
+          
+          #titulo y autor (entregados por yaml de quarto)
+          tag_css("h1.title, .title.h1 { margin: 24px; margin-top: 24px; margin-left: 30px; color: {{color_enlaces}}; }
+                  
+                  .quarto-title-meta-heading { display: none; }
+                  
+                  .quarto-title-meta-contents {
+                  margin-left: 30px; margin-top: 6px; margin-bottom: 12px; color: {{color_texto}};"),
+          
+              # colores de la animación de fondo
+      tags$style(HTML("@keyframes pulse {
+  from {background-color:", color_destacado_2, ";}
+  to {background-color:", color_destacado, ";} }")),
+  
+          tag_css("body {
+             background-color: {{color_fondo}};}
+             
+             a {
+             color: {{color_enlaces}};
+             }
+           
+             a:hover {
+             color: #724be7;
+             text-decoration: none !important; }
+             
+             h1{
+             color: {{color_texto}};}
+             
+             .icono:hover {
+             filter: brightness(130%); transition: 0.4s}
+             
+             .icono_claro:hover {
+             filter: brightness(90%) saturate(140%); transition: 0.4s}")
+)
+```
+
+
+```{r header}
+#| echo: false
+#| warning: false
+#| output: asis
+
+fluidPage(lang = "es",
+          div(
+                   style = css(font_size = "110%", color = color_texto, 
+                               margin_left = "30px", margin_right = "30px", margin_bottom = "-8px"),
+                   
+                   # intro ----
+                   div(style = "height: 20px;"),
+                   
+                   markdown("En esta página se reunen conjuntos de datos sociales listos para usarse en cualquier análisis, exploración, o proceso de aprendizaje."),
+                   
+                   markdown("Cada uno de los conjuntos se aloja en un [repositorio de GitHub](https://github.com/bastianolea?tab=repositories), acompañado del código en R que obtiene y prepara los datos para su uso, además de otros scripts de R que hacen uso del dato para generar otros productos, como gráficos, tablas, o [aplicaciones Shiny](https://bastianolea.github.io/shiny_apps/).")
+                   
+            )
+)
+```
+
+```{r}
+tabla <- datos |> 
+  arrange(desc(fecha)) |>
+  relocate(reciente, popular, .after = etiquetas) |>
+  mutate(titulo = ifelse(!is.na(titulo_repo), titulo_repo, titulo)) |> 
+  # formato columnas gt
+  rowwise() |>
+  mutate(etiquetas = list(discard(etiquetas, etiquetas %in% c("data", "shiny", "r", "app", "tiempo", "comunas", "chile", "meses")))) |> 
+  # columnas
+  mutate(tiempo = case_match(tiempo,
+                                   "anual" ~ "calendar",
+                                   "mensual" ~ "calendar-days")) |> 
+  rowwise() |>
+  mutate(etiquetas = col_tag(etiquetas),
+         titulo = col_link(titulo, enlace),
+         # aplicación = col_icon(aplicación, "window-restore"),
+         app = col_icon_link(app, "window-restore", color = color_enlaces, link =  enlace_app),
+         popular = col_icon(popular, "arrow-up", color = color_enlaces),
+         genero = col_icon(genero, "venus", color = color_enlaces),
+         comunas = col_icon(comunas, "map", color = color_enlaces),
+         reciente = col_icon(reciente, "star", color = color_enlaces)) |> 
+  ungroup()
+```
+
+
+```{r}
+tribble(~icono, ~titulo, ~explicacion,
+        "star", "Recientes", "Código o datos recientemente actualizados",
+        "arrow-up", "Popular", "Conjunto de datos popular en GitHub",
+        "window-restore", "App", "Aplicación interactiva disponible",
+        "venus", "Género", "Datos desagregados por género",
+        "map", "Comunas", "Datos desagregados por comunas",
+        "calendar-days", "Años", "Temporalidad anual de las observaciones",
+        "calendar-days", "Meses", "Temporalidad mensual de las observaciones") |> 
+  gt() |> 
+  fmt_icon(columns = icono, fill_color = color_enlaces) |> 
+  cols_align(columns = icono, "center") |> 
+  cols_label(icono = "", titulo = "", explicacion = "") |> 
+  tab_style(style = cell_text(weight = "bold"),
+            locations = cells_body(columns = titulo)) |> 
+  # eliminar bordes de arriba y abajo de la tabla
+  tab_options(column_labels.border.top.color = color_fondo,
+              column_labels.border.bottom.color = color_fondo,
+              table_body.border.bottom.color = color_fondo) |>
+  # tema de la tabla
+  tab_options(table.background.color = color_fondo,
+              table.font.color = color_texto,
+              table.font.color.light = color_texto,
+              table_body.hlines.color = color_fondo)
+```
+
+
+```{r tabla}
+tabla |> 
+  rowwise() |> 
+  gt() |> 
+  fmt_icon(columns = tiempo, fill_color = color_enlaces) |>
+  sub_missing(columns = everything(), missing_text = "") |>
+  cols_align(columns = titulo, "right") |>
+  cols_align(columns = etiquetas, "left") |>
+  cols_align(columns = c(genero, comunas, app, reciente, popular, tiempo),
+             "center") |>
+  cols_hide(c(enlace, estrellas, fecha, enlace_app, titulo_repo)) |>
+  fmt_markdown(columns = titulo) |> 
+  fmt_markdown(columns = etiquetas) |> 
+  # fmt_markdown(columns = c(genero, comunas, reciente, popular)) |>
+  fmt_markdown(columns = genero, rows = genero != "") |> 
+  fmt_markdown(columns = comunas, rows = comunas != "") |> 
+  fmt_markdown(columns = reciente, rows = reciente != "") |> 
+  fmt_markdown(columns = popular, rows = popular != "") |>
+  fmt_markdown(columns = app, rows = app != "") |> 
+  cols_width(descripcion ~ "40%",
+             etiquetas ~ "20%") |>
+  # centrar verticalmente texto de celdas
+  tab_style(style = "vertical-align:middle",
+            locations = cells_body(columns = everything())
+            ) |>
+  tab_style(style = cell_text(color = color_texto, weight = "bold"),
+            locations = cells_body(columns = titulo)) |>
+  cols_label(titulo = "",
+             descripcion = "",
+             etiquetas = "Temas",
+             reciente = "Reciente",
+             popular = "Popular",
+             genero = "Género",
+             app = "App",
+             comunas = "Comunas",
+             tiempo = "Tiempo") |>
+  # eliminar bordes de arriba y abajo de la tabla
+  tab_options(column_labels.border.top.color = color_fondo,
+              column_labels.border.bottom.color = color_fondo,
+              table_body.border.bottom.color = color_fondo,
+              table.additional_css = paste0("a {color:", color_enlaces, "!important;}")) |>
+  # tema de la tabla
+  tab_options(table.background.color = color_fondo,
+              table.font.color = color_texto,
+              table.font.color.light = color_texto,
+              table_body.hlines.color = color_destacado_2)
+
+```
+
+
+
+```{r footer}
+#| echo: false
+#| output: asis
+
+#outro ----
+div(style = css(margin_top = "10px", font_size = "110%", 
+                       color = color_texto,
+                       margin_left = "30px", margin_right = "30px"),
+
+           
+markdown("Todas estas aplicaciones son de código abierto, y los datos son públicos. Esto significa que cualquier persona puede utilizar [el código y los datos de las aplicaciones](https://github.com/bastianolea?tab=repositories) para adentrarse en el mundo del análisis de datos y [aprender a programar en R](https://bastianolea.rbind.io/blog/r_introduccion/), el lenguaje de programación usado para desarrollar todas estas apps.")
+)
+  
+  div(style = css(margin_top = "40px", font_size = "90%", 
+                       color = color_texto,
+                       margin_left = "30px", margin_right = "30px;"),
+           
+           markdown("_Bastián Olea Herrera._ Magíster en sociología, analista de datos."),
+           
+           markdown("[baolea@uc.cl](https://bastianolea.rbind.io/contact)"), 
+           
+           markdown("[bastianolea.rbind.io](https://bastianolea.rbind.io)"),
+           br()
+    )
+
+# cafecito ----
+fluidRow(
+  column(12, style = "max-width: 360px; margin: auto;",
+         
+         tags$style(HTML(".cafecito:hover {opacity: 75%; transition: 0.3s; color: black !important;}
+                         .cafecito a:hover {color: black}")),
+         
+         tags$style(HTML(".bmc-btn-text {color:", color_fondo, "!important;}")),
+         
+         div(class = "cafecito",
+             style = "transform:scale(0.7);",
+           tags$body(HTML('<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="bastimapache" data-color="#FFDD00" data-emoji=""  data-font="Bree" data-text="Regálame un cafecito" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>'))
+         )
+         
+  )
+)
+```
+
