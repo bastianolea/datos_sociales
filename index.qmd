@@ -3,7 +3,6 @@ title: "Repositorio de datos sociales"
 author: "Bastián Olea Herrera"
 format:
   html:
-    embed-resources: true
     html-table-processing: none
     link-external-icon: false
 execute: 
