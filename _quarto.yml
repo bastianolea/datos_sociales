@@ -1,0 +1,39 @@
+project:
+  type: website
+
+website:
+  navbar:
+    title: "Datos"
+    background: "#1e0f26"
+    foreground: "#ba9bd7"
+    search: false
+    pinned: true
+    collapse: true
+    tools-collapse: true
+    left:
+      - text: "Apps"
+        href: https://bastianolea.github.io/shiny_apps/
+      - text: "Blog"
+        href: https://bastianolea.rbind.io/blog/
+      - text: "Tutoriales"
+        href: https://bastianolea.rbind.io/categories/tutoriales/
+      - text: "Yo"
+        href: https://bastianolea.rbind.io/about/
+      - text: "Contacto"
+        href: https://bastianolea.rbind.io/contact/
+    tools:
+      - icon: globe
+        href: https://bastianolea.rbind.io
+      - icon: twitter
+        href: https://bsky.app/profile/bastianolea.rbind.io
+      - icon: github
+        href: https://github.com/bastianolea?tab=repositories
+      - icon: linkedin
+        href: https://www.linkedin.com/in/bastianolea/
+
+format:
+  html:
+    toc: false
+
+
+

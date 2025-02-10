@@ -4,6 +4,7 @@ color_texto = "#d3c7dd"
 color_enlaces = "#ba9bd7" # "#c8b1de"
 color_destacado = "#31193f"
 color_destacado_2 = "#47215E" # "#422057"
+color_destacado_3 = "#724BE7"
 
 colores <- list()
 

@@ -1,0 +1,22 @@
+project:
+  type: website
+
+website:
+  title: "prueba"
+  navbar:
+    background: primary
+    search: true
+    left:
+      - text: "Home"
+        href: index.qmd
+      - talks.qmd
+      - about.qmd 
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+
+

@@ -11,6 +11,8 @@ execute:
   echo: false
 editor_options: 
   chunk_output_type: console
+body-header: | 
+  This page brought to you by <https://example.com>
 ---
 
 ```{r setup}
@@ -44,6 +46,9 @@ fluidPage(lang = "es",
                   
                   .quarto-title-meta-contents {
                   margin-left: 30px; margin-top: 6px; margin-bottom: 12px; color: {{color_texto}};"),
+          
+          # color hover toolbar
+    tags$style(HTML(".navbar-brand:hover, .nav-link:hover, .quarto-navigation-tool:hover, .navbar-brand:focus {color:", color_destacado_3, " !important; }")),
           
               # colores de la animación de fondo
       tags$style(HTML("@keyframes pulse {
