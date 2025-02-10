@@ -125,7 +125,7 @@ tribble(~icono, ~titulo, ~explicacion,
 
 ```{r datos}
 tabla <- datos |> 
-  arrange(desc(fecha)) |>
+  arrange(desc(popular), desc(fecha)) |>
   relocate(reciente, popular, .after = etiquetas) |>
   mutate(titulo = ifelse(!is.na(titulo_repo), titulo_repo, titulo)) |> 
   # formato columnas gt
