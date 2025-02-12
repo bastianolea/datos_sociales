@@ -1,5 +1,6 @@
 library(rvest)
 library(dplyr)
+library(stringr)
 library(purrr)
 library(lubridate)
 
@@ -97,8 +98,9 @@ tabla_3 <- tabla_2 |>
 
 # scraping de cada repositorio para obtener enlaces y títulos
 datos_repos <- map(tabla_1$enlace, \(enlace) {
-  # enlace <- tabla_1$enlace[12]
+  # enlace <- tabla_1$enlace[8]
   url_repo <- paste0("https://github.com", enlace)
+  message(url_repo)
   
   sitio_repo <- url_repo |> 
     read_html()
@@ -128,9 +130,20 @@ datos_repos <- map(tabla_1$enlace, \(enlace) {
   
   if (length(titulo_repo) == 0) titulo_repo <- NA_character_
   
+  # enlaces de descarga
+  descarga <- sitio_repo |> 
+    html_elements(".markdown-body") |> 
+    html_elements("a") |> 
+    html_attr("href") |> 
+    str_subset("github.*(raw|blob).*datos") |> 
+    pluck(1)
+  
+  if (length(descarga) != 1) descarga <- NA_character_
+  
   tibble(enlace_app,
          titulo_repo,
-         enlace)
+         enlace,
+         descarga)
 })
 
 # limpieza
@@ -138,11 +151,15 @@ datos_repos_2 <- datos_repos |>
   list_rbind() |> 
   filter(!is.na(enlace_app) | !is.na(titulo_repo))
 
+
+# agregar datos de repositorios y arreglar enlaces
 tabla_4 <- tabla_3 |> 
   left_join(datos_repos_2,
             by = "enlace") |> 
-  mutate(enlace = paste("https://github.com", enlace, sep = ""))
+  mutate(enlace = paste("https://github.com", enlace, sep = "")) |> 
+  mutate(bajar = !is.na(descarga))
 
+tabla_4 |> glimpse()
 
 # guardar ----
 readr::write_rds(tabla_4, "repositorios.rds")

@@ -104,7 +104,8 @@ fluidPage(lang = "es",
 tribble(~icono, ~titulo, ~explicacion,
         "star", "Recientes", "Código o datos recientemente actualizados",
         "arrow-up", "Popular", "Conjunto de datos popular en GitHub",
-        "window-restore", "App", "Aplicación interactiva disponible",
+        "circle-down", "Bajar", "Presionar para descarga directa del dato",
+        "window-restore", "App", "Presionar para visitar aplicación o visualizador",
         "venus", "Género", "Datos desagregados por género",
         "map", "Comunas", "Datos desagregados por comunas",
         "calendar", "Años", "Temporalidad anual de las observaciones",
@@ -130,7 +131,7 @@ tribble(~icono, ~titulo, ~explicacion,
 ```{r datos}
 tabla <- datos |> 
   arrange(desc(popular), desc(fecha)) |>
-  relocate(reciente, popular, .after = etiquetas) |>
+  relocate(reciente, popular, bajar, .after = etiquetas) |>
   mutate(titulo = ifelse(!is.na(titulo_repo), titulo_repo, titulo)) |> 
   # formato columnas gt
   rowwise() |>
@@ -143,7 +144,8 @@ tabla <- datos |>
   mutate(etiquetas = col_tag(etiquetas),
          titulo = col_link(titulo, enlace),
          # aplicación = col_icon(aplicación, "window-restore"),
-         app = col_icon_link(app, "window-restore", color = color_enlaces, link =  enlace_app),
+         app = col_icon_link(app, "window-restore", color = color_enlaces, link = enlace_app),
+         bajar = col_icon_link(bajar, "circle-down", color = color_enlaces, link = descarga),
          popular = col_icon(popular, "arrow-up", color = color_enlaces),
          genero = col_icon(genero, "venus", color = color_enlaces),
          comunas = col_icon(comunas, "map", color = color_enlaces),
@@ -155,7 +157,7 @@ tabla <- datos |>
 
 ```{r tabla}
 tabla |> 
-  rowwise() |> 
+  # rowwise() |> 
   gt() |> 
   fmt_icon(columns = tiempo, fill_color = color_enlaces) |>
   sub_missing(columns = everything(), missing_text = "") |>
@@ -163,7 +165,7 @@ tabla |>
   cols_align(columns = etiquetas, "left") |>
   cols_align(columns = c(genero, comunas, app, reciente, popular, tiempo),
              "center") |>
-  cols_hide(c(enlace, estrellas, fecha, enlace_app, titulo_repo)) |>
+  cols_hide(c(enlace, descarga, estrellas, fecha, enlace_app, titulo_repo)) |>
   fmt_markdown(columns = titulo) |> 
   fmt_markdown(columns = etiquetas) |> 
   # fmt_markdown(columns = c(genero, comunas, reciente, popular)) |>
@@ -172,6 +174,7 @@ tabla |>
   fmt_markdown(columns = reciente, rows = reciente != "") |> 
   fmt_markdown(columns = popular, rows = popular != "") |>
   fmt_markdown(columns = app, rows = app != "") |> 
+  fmt_markdown(columns = bajar, rows = bajar != "") |> 
   cols_width(descripcion ~ "40%",
              etiquetas ~ "20%") |>
   # centrar verticalmente texto de celdas
@@ -184,11 +187,13 @@ tabla |>
              descripcion = "",
              etiquetas = "Temas",
              reciente = "Reciente",
+             bajar = "Bajar",
              popular = "Popular",
              genero = "Género",
              app = "App",
              comunas = "Comunas",
              tiempo = "Tiempo") |>
+  # cols_merge(c(reciente, popular, app, genero, comunas, tiempo)) |> 
   # eliminar bordes de arriba y abajo de la tabla
   tab_options(column_labels.border.top.color = color_fondo,
               column_labels.border.bottom.color = color_fondo,
