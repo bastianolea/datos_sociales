@@ -5,8 +5,8 @@ project:
 website:
   navbar:
     title: "Datos"
-    background: "#1e0f26"
-    foreground: "#ba9bd7"
+    background: "#23102B"
+    foreground: "#9F69C8"
     search: false
     pinned: true
     collapse: true

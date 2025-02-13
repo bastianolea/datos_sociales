@@ -1,7 +1,17 @@
 
-color_fondo = "#1e0f26"
-color_texto = "#d3c7dd"
-color_enlaces = "#ba9bd7" # "#c8b1de"
+# color_fondo = "#1e0f26"
+# color_texto = "#d3c7dd"
+# color_enlaces = "#ba9bd7"
+
+color_fondo = "#23102B"
+# color_texto = "#BAA6D2"
+# color_enlaces = "#985BC6"
+
+# color_fondo = "#2E0E3B"
+color_texto = "#B39CCD"
+color_enlaces = "#9F69C8"
+
+
 color_destacado = "#31193f"
 color_destacado_2 = "#47215E" # "#422057"
 color_destacado_3 = "#724BE7"

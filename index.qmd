@@ -4,6 +4,7 @@ author: "Bastián Olea Herrera"
 format:
   html:
     html-table-processing: none
+    page-layout: full
     link-external-icon: false
 execute: 
   warning: false
@@ -47,12 +48,8 @@ fluidPage(lang = "es",
                   margin-left: 30px; margin-top: 6px; margin-bottom: 12px; color: {{color_texto}};"),
           
           # color hover toolbar
-    tags$style(HTML(".navbar-brand:hover, .nav-link:hover, .quarto-navigation-tool:hover, .navbar-brand:focus {color:", color_destacado_3, " !important; }")),
+    tags$style(HTML(".navbar-brand:hover, .nav-link:hover, .quarto-navigation-tool:hover, .navbar-brand:focus {color:", color_texto, " !important; }")),
           
-              # colores de la animación de fondo
-      tags$style(HTML("@keyframes pulse {
-  from {background-color:", color_destacado_2, ";}
-  to {background-color:", color_destacado, ";} }")),
   
           tag_css("body {
              background-color: {{color_fondo}};}
@@ -175,8 +172,15 @@ tabla |>
   fmt_markdown(columns = popular, rows = popular != "") |>
   fmt_markdown(columns = app, rows = app != "") |> 
   fmt_markdown(columns = bajar, rows = bajar != "") |> 
-  cols_width(descripcion ~ "40%",
-             etiquetas ~ "20%") |>
+  cols_width(#descripcion ~ "40%",
+             etiquetas ~ "18%",
+             genero ~ "5%",
+             comunas ~ "5%",
+             reciente ~ "5%",
+             popular ~ "5%",
+             app ~ "5%",
+             bajar ~ "5%"
+             ) |>
   # centrar verticalmente texto de celdas
   tab_style(style = "vertical-align:middle",
             locations = cells_body(columns = everything())
