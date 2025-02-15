@@ -33,9 +33,9 @@ repositorios <- map(repositorios_pagina, ~{
 
 # extraer datos ----
 tabla_0 <- map(repositorios, \(repositorio) {
-  # repositorio <- repositorios[[6]]
+  # repositorio <- repositorios[[15]]
   
-  titulo <- repositorio |> html_elements("h3") |> html_elements("a") |> html_text2()
+  titulo <- repositorio |> html_elements("h3") |> html_elements("a") |> html_text2() |> print()
   enlace <- repositorio |> html_elements("h3") |> html_elements("a") |> html_attr("href")
   
   acceso <- repositorio |> html_elements("h3") |> html_elements("span") |> html_text2()
@@ -44,6 +44,7 @@ tabla_0 <- map(repositorios, \(repositorio) {
   descripcion <- repositorio |> html_elements(".col-9") |> html_text2()
   
   etiquetas <- repositorio |> html_elements(".topics-row-container") |> html_elements("a") |> html_text2() |> list()
+  # sólo extrae hasta 7 etiquetas, pero se usa solo para detectar si viene "data"
   
   fecha <- repositorio |> html_elements("relative-time") |> html_attr("datetime") |> as_date()
   
@@ -53,7 +54,6 @@ tabla_0 <- map(repositorios, \(repositorio) {
     as.numeric() |> 
     pluck(1)
   
-  
   tibble(titulo,
          enlace,
          descripcion,
@@ -61,9 +61,6 @@ tabla_0 <- map(repositorios, \(repositorio) {
          estrellas,
          fecha)
 })
-
-
-
 
 
 # filtrar ----
@@ -79,26 +76,13 @@ tabla_1 <- tabla_0 |>
 tabla_2 <- tabla_1 |> 
   mutate(estrellas = ifelse(is.na(estrellas), 0, estrellas))
 
-# calcular
-tabla_3 <- tabla_2 |> 
-  rowwise() |> 
-  mutate(app = "app" %in% etiquetas,
-         genero = "genero" %in% etiquetas,
-         comunas = "comunas" %in% etiquetas,
-         tiempo = case_when("meses" %in% etiquetas ~ "mensual",
-                            "tiempo" %in% etiquetas ~ "anual",
-                            .default = "no")) |> 
-  ungroup() |> 
-  mutate(popular = estrellas > quantile(estrellas, .35, na.rm = TRUE),
-         popular = ifelse(is.na(popular), FALSE, popular),
-         reciente = fecha >= today() - months(2))
-
 
 # scraping repos ----
 
 # scraping de cada repositorio para obtener enlaces y títulos
 datos_repos <- map(tabla_1$enlace, \(enlace) {
-  # enlace <- tabla_1$enlace[8]
+  # enlace <- tabla_1$enlace[30]
+  
   url_repo <- paste0("https://github.com", enlace)
   message(url_repo)
   
@@ -140,26 +124,63 @@ datos_repos <- map(tabla_1$enlace, \(enlace) {
   
   if (length(descarga) != 1) descarga <- NA_character_
   
+  etiquetas <- sitio_repo |> 
+    html_elements(".Layout-sidebar") |> 
+    html_elements(".f6") |> 
+    html_elements("a") |> 
+    html_text2() |> 
+    list()
+  
   tibble(enlace_app,
          titulo_repo,
          enlace,
-         descarga)
+         descarga,
+         etiquetas)
 })
 
 # limpieza
 datos_repos_2 <- datos_repos |> 
   list_rbind() |> 
-  filter(!is.na(enlace_app) | !is.na(titulo_repo))
+  filter(!is.na(enlace_app) | !is.na(titulo_repo)) |> 
+  # corregir nombres de repos
+  mutate(titulo_repo = str_replace(titulo_repo, "Visualizador de datos de", "Datos de"),
+         titulo_repo = str_replace(titulo_repo, "Visualizaciones de datos", "Datos"),
+         titulo_repo = str_replace(titulo_repo, "Visualizador de estadísticas", "Datos"),
+         titulo_repo = str_replace(titulo_repo, "Visualizador de estadísticas", "Datos"),
+         titulo_repo = str_replace(titulo_repo, "Visualizador de", "Datos de"))
 
+# datos_repos_2 |> select(titulo_repo) |> print(n=Inf)
 
 # agregar datos de repositorios y arreglar enlaces
-tabla_4 <- tabla_3 |> 
+tabla_4 <- tabla_2 |> 
+  select(-etiquetas) |> # la segunda tabla tiene mejores etiquetas
   left_join(datos_repos_2,
             by = "enlace") |> 
   mutate(enlace = paste("https://github.com", enlace, sep = "")) |> 
   mutate(bajar = !is.na(descarga))
 
-tabla_4 |> glimpse()
+
+# calcular
+tabla_5 <- tabla_4 |> 
+  rowwise() |> 
+  mutate(app = "app" %in% etiquetas,
+         genero = "genero" %in% etiquetas,
+         comunas = "comunas" %in% etiquetas,
+         tiempo = case_when("meses" %in% etiquetas ~ "mensual",
+                            "tiempo" %in% etiquetas ~ "anual",
+                            .default = "no")) |> 
+  ungroup() |> 
+  mutate(popular = estrellas > 1 & estrellas > quantile(estrellas, .5, na.rm = TRUE),
+         popular = ifelse(is.na(popular), FALSE, popular),
+         reciente = fecha >= today() - months(2))
+
+# tabla_4 |>
+#   filter(titulo == "femicidios_chile") |>
+#   tidyr::unnest(etiquetas)
+
+tabla_4 |>
+  filter(titulo == "plebiscitos_chile") |> 
+  glimpse()
 
 # guardar ----
-readr::write_rds(tabla_4, "repositorios.rds")
+readr::write_rds(tabla_5, "repositorios.rds")
