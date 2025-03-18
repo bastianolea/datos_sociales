@@ -178,9 +178,9 @@ tabla_5 <- tabla_4 |>
 #   filter(titulo == "femicidios_chile") |>
 #   tidyr::unnest(etiquetas)
 
-tabla_4 |>
-  filter(titulo == "plebiscitos_chile") |> 
-  glimpse()
+# tabla_4 |>
+#   filter(titulo == "plebiscitos_chile") |> 
+#   glimpse()
 
 # guardar ----
 readr::write_rds(tabla_5, "repositorios.rds")
