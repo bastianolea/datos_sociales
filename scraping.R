@@ -81,7 +81,7 @@ tabla_2 <- tabla_1 |>
 
 # scraping de cada repositorio para obtener enlaces y títulos
 datos_repos <- map(tabla_1$enlace, \(enlace) {
-  # enlace <- tabla_1$enlace[30]
+  # enlace <- tabla_1$enlace[8]
   
   url_repo <- paste0("https://github.com", enlace)
   message(url_repo)
@@ -121,6 +121,7 @@ datos_repos <- map(tabla_1$enlace, \(enlace) {
     html_attr("href") |> 
     str_subset("github.*(raw|blob).*datos") |> 
     pluck(1)
+  # para que el repositorio aparezca con enlace de descarga, tiene que tener un enlace en el readme que apunte a un archivo hosteado en GitHub (con `raw` en el enlace)
   
   if (length(descarga) != 1) descarga <- NA_character_
   
