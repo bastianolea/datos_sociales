@@ -4,6 +4,8 @@ Repositorio de mis repositorios de datos. Se trata de una [página web que conti
 
 La tabla se genera mediante un web scraping de mi cuenta de GitHub. Los contenidos de la tabla se adaptan en base a las etiquetas que tiene cada repositorio, la descripción viene de la descripción de cada repo, y el título viene del readme. Las columnas con iconos también se hacen automáticamente a partir de las etiquetas. La tabla se genera con el [paquete {gt}.](https://gt.rstudio.com) La página se genera con [Quarto](https://github.com/quarto-dev/quarto-r) y se publica automáticamente con GitHub Pages.
 
+La gracia es que yo solamente tengo que subir y actualizar los repositorios en GitHub, y con tan sólo ejecutar el script de scraping y actualizar el documento Quarto, obtengo la página al día con mis datos, sus etiquetas y descripciones.
+
 Si quieres aprender a generar una página web así con Quarto, [sigue este tutorial que hice.](https://bastianolea.rbind.io/blog/tutorial_quarto_github_pages/)
 
 ### Instrucciones
