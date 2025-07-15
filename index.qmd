@@ -87,11 +87,11 @@ fluidPage(lang = "es",
                    # intro ----
                    div(style = "height: 20px;"),
                    
-                   markdown("En esta página se reunen conjuntos de datos sociales listos para usarse en cualquier análisis, exploración, o proceso de aprendizaje."),
+                   markdown("En esta página se reunen conjuntos de datos sociales listos para usarse en cualquier análisis, exploración, o proceso de aprendizaje. Principalmente los uso como ejemplo en [mis clases](https://bastianolea.rbind.io/clases/) y en [mi blog de R](https://bastianolea.rbind.io/blog/)."),
                    
-                   markdown("Cada uno de los conjuntos se aloja en un [repositorio de GitHub](https://github.com/bastianolea?tab=repositories), acompañado del código en el lenguaje de progamación R que obtiene y prepara los datos para su uso, además de otros scripts de R que hacen uso del dato para generar otros productos, como gráficos, tablas, o [aplicaciones Shiny](https://bastianolea.github.io/shiny_apps/)."),
+                   markdown("Cada conjunto de datos se aloja en un [repositorio de GitHub](https://github.com/bastianolea?tab=repositories), donde encontrarás código en el lenguaje de progamación R que obtiene, limpia y procesa los datos, junto a scripts con los que se pueden generar gráficos, tablas, análisis estadísticos y [aplicaciones interactivas](https://bastianolea.github.io/shiny_apps/)."),
                    
-                   markdown("Cada elemento de la tabla corresponde a un conjunto de datos, y en las columnas aparecen iconos que describen sus características. Los iconos se explican en la siguiente leyenda:")
+                   markdown("Al lado de cada conjunto de datos aparecen iconos con sus características:")
 
             )
 )
@@ -225,9 +225,12 @@ div(style = css(margin_top = "10px", font_size = "110%",
            
 markdown("Todos los datos son públicos. Esto significa que cualquier persona puede utilizar [el código y los datos de las aplicaciones](https://github.com/bastianolea?tab=repositories) para adentrarse en el mundo del análisis de datos y [aprender a programar en R](https://bastianolea.rbind.io/blog/r_introduccion/), el lenguaje de programación usado para procesar estos datos."),
 
-markdown("Si deseas aprender a analizar datos con R, [en mi sitio web](https://bastianolea.rbind.io) tengo [tutoriales para principiantes y usuarios avanzados](https://bastianolea.rbind.io/categories/tutoriales/). Además, constantemente comparto [consejos y aprendizajes](https://bastianolea.rbind.io/blog/). También puedes usar mi sitio web para [contactarme](https://bastianolea.rbind.io/contact/) con cualquier duda que tengas."),
+markdown("Si deseas aprender a analizar datos con R, [en mi sitio web](https://bastianolea.rbind.io) tengo [tutoriales para principiantes y usuarios avanzados](https://bastianolea.rbind.io/categories/tutoriales/). Además, constantemente comparto [consejos y aprendizajes](https://bastianolea.rbind.io/blog/). Siempre puedes [contactarme](https://bastianolea.rbind.io/contact/) con cualquier duda que tengas!"),
 
-markdown("Si reutilizas estos datos, o estos datos te han servido, ¡no olvides compartir con los demás!")
+markdown("Si reutilizas estos datos, o te han servido, ¡no olvides compartir con los demás!"),
+
+markdown("_Esta página fue [hecha con Quarto](https://bastianolea.rbind.io/blog/datos_sociales/)_")
+
 
 )
   
