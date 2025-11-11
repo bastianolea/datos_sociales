@@ -47,6 +47,10 @@ fluidPage(lang = "es",
                   .quarto-title-meta-contents {
                   margin-left: 30px; margin-top: 6px; margin-bottom: 12px; color: {{color_texto}};"),
           
+          # contador de visitas
+          tags$script(HTML('<script data-goatcounter="https://bastimapache.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>')),
+          
           # color hover toolbar
     tags$style(HTML(".navbar-brand:hover, .nav-link:hover, .quarto-navigation-tool:hover, .navbar-brand:focus {color:", color_texto, " !important; }")),
           
