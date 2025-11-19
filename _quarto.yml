@@ -21,7 +21,7 @@ website:
       - text: "Yo"
         href: https://bastianolea.rbind.io/about/
       - text: "Contacto"
-        href: https://bastianolea.rbind.io/contact/
+        href: https://bastianolea.rbind.io/contacto/
     tools:
       - icon: globe
         href: https://bastianolea.rbind.io
