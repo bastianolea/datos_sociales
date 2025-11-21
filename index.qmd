@@ -12,7 +12,6 @@ execute:
   echo: false
 editor_options: 
   chunk_output_type: console
-
 ---
 
 ```{r setup}
@@ -244,27 +243,18 @@ markdown("_Esta página fue [hecha con Quarto](https://bastianolea.rbind.io/blog
            
            markdown("_Bastián Olea Herrera._ Magíster en sociología, analista de datos."),
            
-           markdown("[baolea@uc.cl](https://bastianolea.rbind.io/contact)"), 
-           
            markdown("[bastianolea.rbind.io](https://bastianolea.rbind.io)"),
            br()
     )
-
-# cafecito ----
-fluidRow(
-  column(12, style = "max-width: 360px; margin: auto;",
-         
-         tags$style(HTML(".cafecito:hover {opacity: 75%; transition: 0.3s; color: black !important;}
-                         .cafecito a:hover {color: black}")),
-         
-         tags$style(HTML(".bmc-btn-text {color:", color_fondo, "!important;}")),
-         
-         div(class = "cafecito",
-             style = "transform:scale(0.7);",
-           tags$body(HTML('<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="bastimapache" data-color="#FFDD00" data-emoji=""  data-font="Bree" data-text="Regálame un cafecito" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>'))
-         )
-         
-  )
-)
 ```
 
+
+
+```{r cafecito}
+#| echo: false
+#| output: asis
+
+div(style = "padding: 24px; text-align: center; margin: auto; transform:scale(.6); opacity: 90%;",
+    tags$body(HTML('<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="bastimapache" data-color="#FFDD00" data-emoji="" data-font="Bree" data-text="Regálame un cafecito" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>'))
+)
+```
