@@ -254,7 +254,11 @@ markdown("_Esta página fue [hecha con Quarto](https://bastianolea.rbind.io/blog
 #| echo: false
 #| output: asis
 
-div(style = "padding: 24px; text-align: center; margin: auto; transform:scale(.6); opacity: 90%;",
-    tags$body(HTML('<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="bastimapache" data-color="#FFDD00" data-emoji="" data-font="Bree" data-text="Regálame un cafecito" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>'))
+div(style = "margin-left: -28px; padding-top: 24px; text-align: center; margin: auto; transform:scale(.5); opacity: 90%;",
+    HTML('<script type="text/javascript" 
+         src = "https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" 
+         data-name="bmc-button" data-slug="bastimapache" data-color="#FFDD00" data-emoji="" data-font="Bree" 
+         data-text="Regálame un cafecito" 
+         data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>')
 )
 ```
