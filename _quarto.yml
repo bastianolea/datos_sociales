@@ -12,16 +12,14 @@ website:
     collapse: true
     tools-collapse: true
     left:
-      - text: "Apps"
-        href: https://bastianolea.github.io/shiny_apps/
       - text: "Blog"
         href: https://bastianolea.rbind.io/blog/
-      - text: "Tutoriales"
-        href: https://bastianolea.rbind.io/categories/tutoriales/
-      - text: "Yo"
-        href: https://bastianolea.rbind.io/about/
-      - text: "Contacto"
-        href: https://bastianolea.rbind.io/contacto/
+      - text: "Apps"
+        href: https://bastianolea.github.io/shiny_apps/
+      - text: "Aprende R"
+        href: https://bastianolea.github.io/aprende_r/
+      - text: "Acerca de"
+        href: https://bastianolea.rbind.io
     tools:
       - icon: globe
         href: https://bastianolea.rbind.io
@@ -31,6 +29,8 @@ website:
         href: https://github.com/bastianolea?tab=repositories
       - icon: linkedin
         href: https://www.linkedin.com/in/bastianolea/
+      - icon: envelope
+        href: https://bastianolea.rbind.io/contacto/
 
 format:
   html:
