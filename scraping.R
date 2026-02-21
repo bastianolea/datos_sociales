@@ -164,7 +164,7 @@ tabla_4 <- tabla_2 |>
 # calcular
 tabla_5 <- tabla_4 |> 
   rowwise() |> 
-  mutate(app = "app" %in% etiquetas,
+  mutate(app = "app" %in% etiquetas, # para que salga como app, tiene que tener el tag "app"
          genero = "genero" %in% etiquetas,
          comunas = "comunas" %in% etiquetas,
          tiempo = case_when("meses" %in% etiquetas ~ "mensual",
